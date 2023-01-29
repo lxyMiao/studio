@@ -6,7 +6,7 @@ on:
     types: [created]
 
 jobs:
-  build_macos:
+  build_android:
     runs-on: android-latest
     steps:
       # Setup
@@ -38,58 +38,4 @@ jobs:
         with:
           files: dist/*/*
 
-  build_windows:
-    runs-on: windows-latest
-    steps:
-      # Setup
-      - uses: actions/checkout@v3
-      - uses: subosito/flutter-action@v2
-        with:
-          channel: "stable"
-          architecture: x64
-
-      # Install packaging tools
-      - name: Install flutter_distributor
-        run: dart pub global activate flutter_distributor
-
-      # Build and package
-      - name: Packaging .msix .zip
-        run: flutter_distributor package --platform windows --targets msix,zip --artifact-name "TerminalStudio-${{github.ref_name}}-windows.{{ext}}"
-
-      # Publish
-      - name: Publish to GitHub Release
-        uses: softprops/action-gh-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          files: dist/*/*
-
-  build_linux:
-    runs-on: ubuntu-latest
-    steps:
-      # Setup
-      - uses: actions/checkout@v3
-      - uses: subosito/flutter-action@v2
-        with:
-          channel: "stable"
-          architecture: x64
-
-      - run: |
-          sudo apt-get update -y
-          sudo apt-get install -y ninja-build libgtk-3-dev
-
-      # Install packaging tools
-      - name: Install flutter_distributor
-        run: dart pub global activate flutter_distributor
-
-      # Build and package
-      - name: Packaging .deb .zip
-        run: flutter_distributor package --platform linux --targets deb,zip --artifact-name "TerminalStudio-${{github.ref_name}}-linux.{{ext}}"
-
-      # Publish
-      - name: Publish to GitHub Release
-        uses: softprops/action-gh-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          files: dist/*/*
+  
