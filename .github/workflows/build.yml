@@ -7,7 +7,7 @@ on:
 
 jobs:
   build_macos:
-    runs-on: macos-latest
+    runs-on: android-latest
     steps:
       # Setup
       - uses: actions/checkout@v3
@@ -15,7 +15,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: "stable"
-          architecture: x64
+          architecture: aarch64
 
       - uses: actions/setup-node@v2
 
@@ -27,8 +27,8 @@ jobs:
         run: npm install -g appdmg
 
       # Build and package
-      - name: Packaging .dmg .zip
-        run: flutter_distributor package --platform macos --targets dmg,zip --artifact-name "TerminalStudio-${{github.ref_name}}-macos.{{ext}}"
+      - name: Packaging .apk
+        run: flutter_distributor package --platform android --targets term.apk --artifact-name "TerminalStudio-${{github.ref_name}}-android.{{ext}}"
 
       # Publish
       - name: Publish to GitHub Release
